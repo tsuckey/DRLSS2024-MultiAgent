@@ -1,1 +1,1 @@
-# WorldModel2023
+# Deep Reinforcement Learning Spring Seminar 2024 - Multi Agent
