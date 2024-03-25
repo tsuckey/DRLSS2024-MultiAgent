@@ -23,7 +23,7 @@ def _label_with_episode_number(frame, episode_num):
     else:
         text_color = (0, 0, 0)
     drawer.text(
-        (im.size[0] / 20, im.size[1] / 18), f"Episode: {episode_num+1}", fill=text_color
+        (im.size[0] / 20, im.size[1] / 18), f"ep: {episode_num+1}", fill=text_color
     )
 
     return im
@@ -46,6 +46,8 @@ if __name__ == "__main__":
 
     # Configure the environment
     env = space_invaders_v2.parallel_env(
+        full_action_space=False,
+        max_cycles=10*1000*1000,
         render_mode="rgb_array"
     )
     
@@ -104,8 +106,8 @@ if __name__ == "__main__":
     matd3.loadCheckpoint(path)
 
     # Define test loop parameters
-    episodes = 10  # Number of episodes to test agent on
-    max_steps = 500  # Max number of steps to take in the environment in each episode
+    episodes = 1  # Number of episodes to test agent on
+    max_steps = 10*1000*1000  # Max number of steps to take in the environment in each episode
 
     rewards = []  # List to collect total episodic reward
     frames = []  # List to collect frames
@@ -118,7 +120,7 @@ if __name__ == "__main__":
         state, info = env.reset()
         agent_reward = {agent_id: 0 for agent_id in agent_ids}
         score = 0
-        for _ in range(max_steps):
+        for i,_ in enumerate(range(max_steps)):
             if channels_last:
                 state = {
                     agent_id: np.moveaxis(np.expand_dims(s, 0), [3], [1])
@@ -160,9 +162,11 @@ if __name__ == "__main__":
 
             # Stop episode if any agents have terminated
             if any(truncation.values()) or any(termination.values()):
+                print("terminated.")
                 break
 
         rewards.append(score)
+        print(i)
 
         # Record agent specific episodic reward
         for agent_id in agent_ids:
@@ -181,7 +185,7 @@ if __name__ == "__main__":
     os.makedirs(gif_path, exist_ok=True)
     imageio.mimwrite(
         #os.path.join("./videos/", "speaker_listener.gif"), frames, duration=10
-        os.path.join(gif_path, "space_invaders_v2.gif"), frames, duration=10
+        os.path.join(gif_path, "space_invaders_v2_"+str(i)+".gif"), frames, duration=5
     )
 
     print("Done.")

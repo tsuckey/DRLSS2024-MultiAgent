@@ -21,7 +21,7 @@
   },
   "PARAM_TRAIN": {
     "max_episodes_bak": 100000,
-    "max_episodes": 10000,
+    "max_episodes": 5000,
     "max_steps_bak": 500,
     "max_steps": 100,
     "epsilon": 1.0,

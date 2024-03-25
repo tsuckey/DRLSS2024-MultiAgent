@@ -51,6 +51,7 @@ if __name__ == "__main__":
         
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #device = "cpu"
     print("===== AgileRL Online Multi-Agent Demo =====")
 
     # Define the network configuration
@@ -81,9 +82,12 @@ if __name__ == "__main__":
     # Define the simple speaker listener environment as a parallel environment
     # シンプル・スピーカー・リスナー環境（並列）の定義
     #env = simple_v3.parallel_env(continuous_actions=True)
-    env = space_invaders_v2.parallel_env()
+    env = space_invaders_v2.parallel_env(full_action_space=False, max_cycles=10*1000*1000)
     if INIT_HP["CHANNELS_LAST"]:
         # Environment processing for image based observations
+        # as per openai baseline's MaxAndSKip wrapper, maxes over the last 2 frames
+        # to deal with frame flickering
+        env = ss.max_observation_v0(env, 2)
         env = ss.frame_skip_v0(env, 4)
         env = ss.clip_reward_v0(env, lower_bound=-1, upper_bound=1)
         env = ss.color_reduction_v0(env, mode="B")
@@ -310,6 +314,7 @@ if __name__ == "__main__":
                 # Stop episode if any agents have terminated
                 # いずれかのエージェントが終了したならば、エピソードを停止する
                 if any(truncation.values()) or any(termination.values()):
+                    print("terminated.")
                     break
 
             # Save the total episode reward
@@ -393,24 +398,29 @@ if __name__ == "__main__":
     save_path = os.path.join(path, filename)
     with open(save_path, "wb") as f:
         dill.dump(population, f)
+    del population
 
-    # replaybuffer を保存
-    filename = "pickle-replaybuffer.pkl"
-    save_path = os.path.join(path, filename)
-    with open(save_path, "wb") as f:
-        dill.dump(memory, f)
+    if False:
+        # replaybuffer を保存
+        filename = "pickle-replaybuffer.pkl"
+        save_path = os.path.join(path, filename)
+        with open(save_path, "wb") as f:
+            dill.dump(memory, f)
+        del memory
 
     # tounament を保存
     filename = "pickle-tournament.pkl"
     save_path = os.path.join(path, filename)
     with open(save_path, "wb") as f:
         dill.dump(tournament, f)
+    del tournament
 
     # mutation を保存
     filename = "pickle-mutations.pkl"
     save_path = os.path.join(path, filename)
     with open(save_path, "wb") as f:
         dill.dump(mutations, f)
+    del mutations
 
     #JSONファイルも複製をとっておく
     with open(args.param, mode="rt", encoding="utf-8") as f:
