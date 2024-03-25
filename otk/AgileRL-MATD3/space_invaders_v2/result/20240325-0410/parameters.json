@@ -1,0 +1,53 @@
+{
+  "NET_CONFIG": {
+    "arch": "cnn",
+    "h_size": [
+      32,
+      32
+    ],
+    "c_size": [
+      3,
+      32
+    ],
+    "k_size": [
+      [
+        1,
+        3,
+        3
+      ],
+      [
+        1,
+        3,
+        3
+      ]
+    ],
+    "s_size": [
+      2,
+      2
+    ],
+    "normalize": "True"
+  },
+  "INIT_HP": {
+    "POPULATION_SIZE": 1,
+    "ALGO": "MATD3",
+    "CHANNELS_LAST": "True",
+    "BATCH_SIZE": 64,
+    "LR": 0.01,
+    "GAMMA": 0.95,
+    "MEMORY_SIZE": 200000,
+    "LEARN_STEP": 5,
+    "TAU": 0.01,
+    "POLICY_FREQ": 2
+  },
+  "PARAM_TRAIN": {
+    "max_episodes_bak": 100000,
+    "max_episodes": 500,
+    "max_steps_bak": 500,
+    "max_steps": 100,
+    "epsilon": 1.0,
+    "eps_end": 0.1,
+    "eps_decay": 0.995,
+    "evo_epochs": 50,
+    "evo_loop": 3
+  }
+}
