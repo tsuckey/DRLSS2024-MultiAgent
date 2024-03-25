@@ -314,7 +314,7 @@ if __name__ == "__main__":
                 # Stop episode if any agents have terminated
                 # いずれかのエージェントが終了したならば、エピソードを停止する
                 if any(truncation.values()) or any(termination.values()):
-                    print("terminated.")
+                    #print("terminated.")
                     break
 
             # Save the total episode reward
@@ -353,7 +353,7 @@ if __name__ == "__main__":
 
 
         # 5000エピソードごとに、モデルを保存
-        if (idx_epi + 1) % 5000 == 0:
+        if (idx_epi + 1) % 1000 == 0:
 
             print("Save Model at ep ", (idx_epi+1))
             
